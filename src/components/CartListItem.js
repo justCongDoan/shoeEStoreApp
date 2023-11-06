@@ -75,3 +75,5 @@ const styles = StyleSheet.create({
         fontWeight: "500",
     },
 })
+
+// indicate the fixed commit
