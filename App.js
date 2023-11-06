@@ -2,12 +2,14 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import ProductScreen from './src/screens/ProductsScreen';
 import ProductDetailsScreen from './src/screens/ProductDetailsScreen';
+import ShoppingCart from './src/screens/ShoppingCart';
 
 const App = () => {
   return (
     <View style={styles.container}>
       {/* <ProductScreen/> */}
-      <ProductDetailsScreen/>
+      {/* <ProductDetailsScreen/> */}
+      <ShoppingCart/>
     </View>
   );
 };
