@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Pressable, ActivityIndicator, Alert } from 'react-native'
 import CartListItem from '../components/CartListItem'
-import { useSelector } from 'react-redux'
-import { selectDeliveryPrice, selectSubtotal, selectTotal } from '../store/cartSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectDeliveryPrice, selectSubtotal, selectTotal, cartSlice } from '../store/cartSlice'
+import { useCreateOrderMutation } from '../store/apiSlice'
 
 const ShoppingCartTotals = () => {
     const subTotal = useSelector(selectSubtotal);
@@ -27,7 +28,39 @@ const ShoppingCartTotals = () => {
 
 const ShoppingCart = () => {
 
+    const subTotal = useSelector(selectSubtotal);
+    const deliveryFee = useSelector(selectDeliveryPrice);
+    const total = useSelector(selectTotal);
+    const dispatch = useDispatch();
+
     const cartItems = useSelector((state) => state.cart.items);
+
+    const [createOrder, {data, isLoading, error}] = useCreateOrderMutation();
+
+    console.log(error, isLoading);
+
+    const onCreateOrder = async () => {
+        const result = await createOrder({
+            items: cartItems,
+            subTotal,
+            deliveryFee,
+            total,
+            customer: {
+                name: "Benjamin",
+                address: "My Address",
+                email: "example@gmail.com",
+            },
+        });
+        if (result.data?.status === 'OK') {
+            console.log(result.data);
+            Alert.alert(
+              'Order has been submitted',
+              `Your order reference is: ${result.data.data.ref}`
+            );
+            dispatch(cartSlice.actions.clear());
+        }
+    };
+
     return (
         <>
             <FlatList
@@ -37,8 +70,11 @@ const ShoppingCart = () => {
                 ListFooterComponent={ShoppingCartTotals}
             />
             <View style={styles.footer}>
-                <Pressable style={styles.button}>
-                    <Text style={styles.buttonText}>Checkout</Text>
+                <Pressable style={styles.button} onPress={onCreateOrder}>
+                    <Text style={styles.buttonText}>
+                        Checkout
+                        {isLoading && <ActivityIndicator/>}
+                    </Text>
                 </Pressable>
             </View>
         </>
