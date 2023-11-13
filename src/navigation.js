@@ -5,8 +5,10 @@ import ProductDetailsScreen from './screens/ProductDetailsScreen'
 import ShoppingCart from './screens/ShoppingCart'
 import { Pressable, Text } from 'react-native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector } from 'react-redux';
 import { selectNumberOfItems } from './store/cartSlice'
+import TrackOrder from './screens/TrackOrder'
 
 const Stack = createNativeStackNavigator();
 
@@ -19,20 +21,30 @@ const Navigation = () => {
                 <Stack.Screen 
                     name='Products' 
                     component={ProductsScreen} 
-                    options={({navigation}) => ({headerRight: () => (
-                        <Pressable
-                            style={{ flexDirection: 'row' }}
-                            onPress={() => navigation.navigate('Cart')}>
-                            <FontAwesome5 name='shopping-cart' size={18} color='gray'/>
-                            <Text
-                                style={{
-                                    marginLeft: 5,
-                                    fontWeight: '500'
-                                }}>
-                                {numberOfItems}
-                            </Text>
-                        </Pressable>
-                    )})}
+                    options={({navigation}) => ({
+                        headerRight: () => (
+                            <Pressable
+                                style={{ flexDirection: 'row' }}
+                                onPress={() => navigation.navigate('Cart')}>
+                                <FontAwesome5 name='shopping-cart' size={18} color='gray'/>
+                                <Text
+                                    style={{
+                                        marginLeft: 5,
+                                        fontWeight: '500'
+                                    }}>
+                                    {numberOfItems}
+                                </Text>
+                            </Pressable>
+                        ),
+                        headerLeft: () => (
+                            <MaterialCommunityIcons
+                                onPress={() => navigation.navigate('Track Order')}
+                                name="truck-delivery"
+                                size={22}
+                                color="gray"
+                            />
+                        ),
+                    })}
                 />
                 <Stack.Screen 
                     name='Product Details' 
@@ -40,6 +52,7 @@ const Navigation = () => {
                     options={{presentation: 'modal'}}
                 />
                 <Stack.Screen name='Cart' component={ShoppingCart}/>
+                <Stack.Screen name='Track Order' component={TrackOrder}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
